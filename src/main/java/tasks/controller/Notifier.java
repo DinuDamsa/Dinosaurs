@@ -8,16 +8,16 @@ import tasks.model.Task;
 
 import java.util.Date;
 
-public class Notificator extends Thread {
+public class Notifier extends Thread {
 
     private static final int millisecondsInSec = 1000;
     private static final int secondsInMin = 60;
 
-    private static final Logger log = Logger.getLogger(Notificator.class.getName());
+    private static final Logger log = Logger.getLogger(Notifier.class.getName());
 
     private ObservableList<Task> tasksList;
 
-    public Notificator(ObservableList<Task> tasksList){
+    public Notifier(ObservableList<Task> tasksList){
         this.tasksList=tasksList;
     }
 

@@ -3,6 +3,7 @@ package tasks.model;
 
 
 import org.apache.log4j.Logger;
+import tasks.exceptions.TaskNotFoundException;
 
 import java.util.*;
 
@@ -53,7 +54,7 @@ public class ArrayTaskList extends TaskList{
 
     @Override
     public void add(Task task){
-        if (task.equals(null)) throw new NullPointerException("Task shouldn't be null");
+        if (task == null) throw new TaskNotFoundException("Task shouldn't be null");
         if (numberOfTasks == currentCapacity-1){
             currentCapacity = currentCapacity * 2;
             Task[] withAddedTask = new Task[currentCapacity];
@@ -139,11 +140,11 @@ public class ArrayTaskList extends TaskList{
     }
     @Override
     protected ArrayTaskList clone() throws CloneNotSupportedException {
-        ArrayTaskList tasks = new ArrayTaskList();
+        ArrayTaskList localTasks = new ArrayTaskList();
         for (int i = 0; i < this.tasks.length; i++){
-            tasks.add(this.getTask(i));
+            localTasks.add(this.getTask(i));
         }
-        return tasks;
+        return localTasks;
 
     }
 

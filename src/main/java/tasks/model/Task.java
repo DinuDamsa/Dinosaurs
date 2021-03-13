@@ -1,6 +1,7 @@
 package tasks.model;
 
 import org.apache.log4j.Logger;
+import tasks.exceptions.ValidationException;
 import tasks.services.TaskIO;
 
 import java.io.Serializable;
@@ -13,33 +14,33 @@ public class Task implements Serializable, Cloneable {
     private Date time;
     private Date start;
     private Date end;
-    private int interval;
+    private long interval;
     private boolean active;
 
     private static final Logger log = Logger.getLogger(Task.class.getName());
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-    public static SimpleDateFormat getDateFormat(){
+    public SimpleDateFormat getDateFormat(){
         return sdf;
     }
     public Task(String title, Date time){
         if (time.getTime() < 0) {
             log.error("time below bound");
-            throw new IllegalArgumentException("Time cannot be negative");
+            throw new ValidationException("Time cannot be negative");
         }
         this.title = title;
         this.time = time;
         this.start = time;
         this.end = time;
     }
-    public Task(String title, Date start, Date end, int interval){
+    public Task(String title, Date start, Date end, long interval){
         if (start.getTime() < 0 || end.getTime() < 0) {
             log.error("time below bound");
-            throw new IllegalArgumentException("Time cannot be negative");
+            throw new ValidationException("Time cannot be negative");
         }
         if (interval < 1) {
             log.error("interval < than 1");
-            throw new IllegalArgumentException("interval should me > 1");
+            throw new ValidationException("interval should me > 1");
         }
         this.title = title;
         this.start = start;
@@ -81,11 +82,11 @@ public class Task implements Serializable, Cloneable {
     public Date getEndTime() {
         return end;
     }
-    public int getRepeatInterval(){
+    public long getRepeatInterval(){
         return interval > 0 ? interval : 0;
     }
 
-    public void setTime(Date start, Date end, int interval){
+    public void setTime(Date start, Date end, long interval){
         this.time = start;
         this.start = start;
         this.end = end;
@@ -93,7 +94,7 @@ public class Task implements Serializable, Cloneable {
 
     }
     public boolean isRepeated(){
-        return !(this.interval == 0);
+        return this.interval != 0;
 
     }
     public Date nextTimeAfter(Date current){
@@ -104,7 +105,7 @@ public class Task implements Serializable, Cloneable {
             if (current.before(start)){
                 return start;
             }
-            if ((current.after(start) || current.equals(start)) && (current.before(end) || current.equals(end))){
+            if ((current.after(start) || current.equals(start)) && current.before(end)){
                 for (long i = start.getTime(); i <= end.getTime(); i += interval*1000){
                     if (current.equals(timeAfter)) return new Date(timeAfter.getTime()+interval*1000);
                     if (current.after(timeBefore) && current.before(timeAfter)) return timeBefore;//return timeAfter
@@ -156,7 +157,7 @@ public class Task implements Serializable, Cloneable {
         result = 31 * result + time.hashCode();
         result = 31 * result + start.hashCode();
         result = 31 * result + end.hashCode();
-        result = 31 * result + interval;
+        result = (int) (31 * result + interval);
         result = 31 * result + (active ? 1 : 0);
         return result;
     }

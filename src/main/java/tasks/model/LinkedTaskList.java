@@ -3,6 +3,7 @@ package tasks.model;
 
 
 import org.apache.log4j.Logger;
+import tasks.exceptions.TaskNotFoundException;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -58,7 +59,7 @@ public class LinkedTaskList  extends TaskList {
     public boolean remove(Task task) {
         if (isNull(task)) {
             log.error("removing task that doesn't exist");
-            throw new NullPointerException("Task is null");
+            throw new TaskNotFoundException("Task is null");
         }
 
         Node cursor = last;

@@ -1,3 +1,4 @@
 /.idea
 /target
-Dinosaurs.iml
+*.iml
+/logs

@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class Controller {
-    private static final Logger log = Logger.getLogger(Controller.class.getName());
+public class MainWindowController {
+    private static final Logger log = Logger.getLogger(MainWindowController.class.getName());
     public ObservableList<Task> tasksList;
     TasksService service;
     DateService dateService;
@@ -94,12 +94,15 @@ public class Controller {
             NewEditController editCtrl = loader.getController();
             editCtrl.setService(service);
             editCtrl.setTasksList(tasksList);
-            editCtrl.setCurrentTask((Task)mainTable.getSelectionModel().getSelectedItem());
-            editNewStage.setScene(new Scene(root, 600, 350));
-            editNewStage.setResizable(false);
-            editNewStage.initOwner(Main.primaryStage);
-            editNewStage.initModality(Modality.APPLICATION_MODAL);//??????
-            editNewStage.show();
+            Object selectedItem = mainTable.getSelectionModel().getSelectedItem();
+            if(selectedItem != null || ((Button)actionEvent.getSource()).getId().equals("btnNew")){
+                editCtrl.setCurrentTask((Task)selectedItem);
+                editNewStage.setScene(new Scene(root, 600, 350));
+                editNewStage.setResizable(false);
+                editNewStage.initOwner(Main.primaryStage);
+                editNewStage.initModality(Modality.APPLICATION_MODAL);//??????
+                editNewStage.show();
+            }
         }
         catch (IOException e){
             log.error("Error loading new-edit-task.fxml");

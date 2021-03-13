@@ -4,11 +4,11 @@ import javafx.collections.ObservableList;
 
 import java.util.*;
 
-public class TasksOperations {
+public class TaskScheduler {
 
     public ArrayList<Task> tasks;
 
-    public TasksOperations(ObservableList<Task> tasksList){
+    public TaskScheduler(ObservableList<Task> tasksList){
         tasks=new ArrayList<>();
         tasks.addAll(tasksList);
     }

@@ -4,7 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import tasks.model.ArrayTaskList;
 import tasks.model.Task;
-import tasks.model.TasksOperations;
+import tasks.model.TaskScheduler;
 
 import java.util.Date;
 
@@ -21,7 +21,7 @@ public class TasksService {
         return FXCollections.observableArrayList(tasks.getAll());
     }
     public String getIntervalInHours(Task task){
-        int seconds = task.getRepeatInterval();
+        int seconds = (int) task.getRepeatInterval();
         int minutes = seconds / DateService.SECONDS_IN_MINUTE;
         int hours = minutes / DateService.MINUTES_IN_HOUR;
         minutes = minutes % DateService.MINUTES_IN_HOUR;
@@ -47,7 +47,7 @@ public class TasksService {
     }
 
     public Iterable<Task> filterTasks(Date start, Date end){
-        TasksOperations tasksOps = new TasksOperations(getObservableList());
+        TaskScheduler tasksOps = new TaskScheduler(getObservableList());
         Iterable<Task> filtered = tasksOps.incoming(start,end);
         //Iterable<Task> filtered = tasks.incoming(start, end);
 
