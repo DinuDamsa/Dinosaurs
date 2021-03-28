@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -183,6 +185,7 @@ class NewEditControllerTest {
     @Test
     @DisplayName("ECP_OK2_add")
     @Tag("BBT")
+    @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
     void saveChanges_ECP_valid_2() {
         Task task_ECP_ok_2 = new Task("Task 2", start2, end2, interval_ok);
         newEditController.saveChangesButCanBeTested(task_ECP_ok_2);

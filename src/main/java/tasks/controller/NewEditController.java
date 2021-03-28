@@ -148,7 +148,7 @@ public class NewEditController {
     }
 
     @FXML
-    public void saveChanges() { // I hate this project. I would have not been here if I coded like that. Disgusting.
+    public void saveChanges() {
         Task collectedFieldsTask = collectFieldsData(); // throws ValidationException; NPE
 
         saveChangesButCanBeTested(collectedFieldsTask);
