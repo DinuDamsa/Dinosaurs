@@ -34,6 +34,10 @@ public class Task implements Serializable, Cloneable {
         this.end = time;
     }
     public Task(String title, Date start, Date end, long interval){
+        if (title.length() <= 0 || title.length() > 255){
+            log.error("Title length out of range!");
+            throw new ValidationException("Title length out of range!");
+        }
         if (start.getTime() < 0 || end.getTime() < 0) {
             log.error("time below bound");
             throw new ValidationException("Time cannot be negative");

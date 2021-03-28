@@ -41,35 +41,40 @@ public class NewEditController {
     private static Stage currentStage;
 
     private Task currentTask;
+
+    public ObservableList<Task> getTasksList() {
+        return tasksList;
+    }
+
     private ObservableList<Task> tasksList;
     private TasksService service;
     private DateService dateService;
 
 
-    private boolean incorrectInputMade;
+    public boolean incorrectInputMade;
     @FXML
-    private TextField fieldTitle;
+    public TextField fieldTitle;
     @FXML
-    private DatePicker datePickerStart;
+    public DatePicker datePickerStart;
     @FXML
-    private TextField txtFieldTimeStart;
+    public TextField txtFieldTimeStart;
     @FXML
-    private DatePicker datePickerEnd;
+    public DatePicker datePickerEnd;
     @FXML
-    private TextField txtFieldTimeEnd;
+    public TextField txtFieldTimeEnd;
     @FXML
-    private TextField fieldInterval;
+    public TextField fieldInterval;
     @FXML
-    private CheckBox checkBoxActive;
+    public CheckBox checkBoxActive;
     @FXML
-    private CheckBox checkBoxRepeated;
+    public CheckBox checkBoxRepeated;
 
     private static final String DEFAULT_START_TIME = "8:00";
     private static final String DEFAULT_END_TIME = "10:00";
     private static final String DEFAULT_INTERVAL_TIME = "0:30";
 
     public void setTasksList(ObservableList<Task> tasksList){
-        this.tasksList =tasksList;
+        this.tasksList = tasksList;
     }
 
     public void setService(TasksService service){
@@ -143,24 +148,30 @@ public class NewEditController {
     }
 
     @FXML
-    public void saveChanges(){
-        Task collectedFieldsTask = collectFieldsData();
-        if (incorrectInputMade) return;
+    public void saveChanges() { // I hate this project. I would have not been here if I coded like that. Disgusting.
+        Task collectedFieldsTask = collectFieldsData(); // throws ValidationException; NPE
 
-        if (currentTask == null){//no task was chosen -> add button was pressed
-            tasksList.add(collectedFieldsTask);
-        }
-        else {
-            for (int i = 0; i < tasksList.size(); i++){
-                if (currentTask.equals(tasksList.get(i))){
-                    tasksList.set(i,collectedFieldsTask);
+        saveChangesButCanBeTested(collectedFieldsTask);
+
+        MainWindowController.editNewStage.close();
+    }
+
+    public void saveChangesButCanBeTested(Task task) {
+        if (incorrectInputMade) return; // TODO: TC1: incorrectInputMade == true
+
+        if (currentTask == null) {//no task was chosen -> add button was pressed // TODO: TC2: incorrectInputMade == false && currentTask == null
+            tasksList.add(task);
+        } else { // TODO: incorrectInputMade == false && currentTask != null
+            for (int i = 0; i < tasksList.size(); i++) {
+                if (currentTask.equals(tasksList.get(i))) { // TODO: TC3 incorrectInputMade == false && currentTask == *already existent*
+                    tasksList.set(i, task);
                 }
             }
             currentTask = null;
         }
         TaskIO.rewriteFile(tasksList);
-        MainWindowController.editNewStage.close();
     }
+
     @FXML
     public void closeDialogWindow(){
         MainWindowController.editNewStage.close();
