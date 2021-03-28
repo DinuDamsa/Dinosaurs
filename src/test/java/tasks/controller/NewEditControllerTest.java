@@ -18,6 +18,7 @@ import tasks.services.TasksService;
 import tasks.view.Main;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,9 +70,8 @@ class NewEditControllerTest {
     private ObservableList<Task> tasksList;
 
     private static ClassLoader classLoader = Main.class.getClassLoader();
-    private static File savedTasksFile = new File(classLoader.getResource("data/tasks.txt").getFile());
     private ArrayTaskList savedTasksList = new ArrayTaskList();
-
+    private File savedTasksFile;
     @BeforeEach
     void setUp() {
         tasks = new ArrayTaskList();
@@ -81,11 +81,20 @@ class NewEditControllerTest {
         newEditController = new NewEditController();
         newEditController.setTasksList(tasksList);
         newEditController.setService(mockTasksService);
+        savedTasksFile = new File(classLoader.getResource("data/tasks.txt").getFile());
+
     }
 
     @AfterEach
     void tearDown() {
         savedTasksList = new ArrayTaskList();
+        FileWriter f2 = null;
+        try {
+            f2 = new FileWriter(savedTasksFile, false);
+            f2.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
