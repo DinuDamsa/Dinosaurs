@@ -6,6 +6,7 @@ import tasks.model.ArrayTaskList;
 import tasks.model.Task;
 import tasks.model.TaskScheduler;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class TasksService {
@@ -15,7 +16,6 @@ public class TasksService {
     public TasksService(ArrayTaskList tasks){
         this.tasks = tasks;
     }
-
 
     public ObservableList<Task> getObservableList(){
         return FXCollections.observableArrayList(tasks.getAll());
@@ -37,7 +37,6 @@ public class TasksService {
         return sb.toString();
     }
 
-
     public int parseFromStringToSeconds(String stringTime){//hh:MM
         String[] units = stringTime.split(":");
         int hours = Integer.parseInt(units[0]);
@@ -46,11 +45,16 @@ public class TasksService {
         return result;
     }
 
-    public Iterable<Task> filterTasks(Date start, Date end){
-        TaskScheduler tasksOps = new TaskScheduler(getObservableList());
-        Iterable<Task> filtered = tasksOps.incoming(start,end);
+    public Iterable<Task> filterTasks(LocalDate startDateValue, String startTimeValue, Date end){
+//        TaskScheduler tasksOps = new TaskScheduler(getObservableList());
+        TaskScheduler tasksOps = new TaskScheduler(tasks.getAll());
+        Iterable<Task> filtered = tasksOps.incoming(startDateValue, startTimeValue, end);
         //Iterable<Task> filtered = tasks.incoming(start, end);
 
         return filtered;
+    }
+
+    public void addTask(Task task) {
+        this.tasks.add(task);
     }
 }

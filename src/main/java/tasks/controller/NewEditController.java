@@ -47,7 +47,7 @@ public class NewEditController {
     }
 
     private ObservableList<Task> tasksList;
-    private TasksService service;
+        private TasksService service;
     private DateService dateService;
 
 
@@ -161,10 +161,12 @@ public class NewEditController {
 
         if (currentTask == null) {//no task was chosen -> add button was pressed // TODO: TC2: incorrectInputMade == false && currentTask == null
             tasksList.add(task);
+            service.addTask(task);
         } else { // TODO: incorrectInputMade == false && currentTask != null
             for (int i = 0; i < tasksList.size(); i++) {
                 if (currentTask.equals(tasksList.get(i))) { // TODO: TC3 incorrectInputMade == false && currentTask == *already existent*
                     tasksList.set(i, task);
+                    service.addTask(task);
                 }
             }
             currentTask = null;
@@ -221,6 +223,4 @@ public class NewEditController {
         System.out.println(result);
         return result;
     }
-
-
 }

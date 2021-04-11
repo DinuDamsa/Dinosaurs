@@ -133,10 +133,22 @@ public class MainWindowController {
     }
     @FXML
     public void showFilteredTasks(){
-        Date start = getDateFromFilterField(datePickerFrom.getValue(), fieldTimeFrom.getText());
-        Date end = getDateFromFilterField(datePickerTo.getValue(), fieldTimeTo.getText());
+        LocalDate dpfValue = datePickerFrom.getValue();
+        LocalDate dptValue = datePickerTo.getValue();
 
-        Iterable<Task> filtered =  service.filterTasks(start, end);
+        String ftf = fieldTimeFrom.getText();
+        String ftt = fieldTimeTo.getText();
+        showFilteredTasksButCanBeTested(dpfValue, dptValue, ftf, ftt);
+    }
+
+    // TODO: white-box tested method
+    private void showFilteredTasksButCanBeTested(LocalDate startDateValue, LocalDate endDateValue, String startTimeValue, String endTimeValue) {
+
+
+//        Date start = getDateFromFilterField(dpfValue, ftf);
+        Date end = getDateFromFilterField(endDateValue, endTimeValue);
+
+        Iterable<Task> filtered =  service.filterTasks(startDateValue, startTimeValue, end);
 
         ObservableList<Task> observableTasks = FXCollections.observableList((ArrayList)filtered);
         tasks.setItems(observableTasks);
@@ -151,5 +163,4 @@ public class MainWindowController {
         tasks.setItems(tasksList);
 
     }
-
 }

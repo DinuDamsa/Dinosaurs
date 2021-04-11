@@ -25,21 +25,39 @@ public class DateService {
 
     }
     public Date getDateValueFromLocalDate(LocalDate localDate){//for getting from DatePicker
-        Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
-        return Date.from(instant);
+        try {
+            Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
+            return Date.from(instant);
+        }
+        catch (NullPointerException ignored){
+            return null;
+        }
     }
     public Date getDateMergedWithTime(String time, Date noTimeDate) {//to retrieve Date object from both DatePicker and time field
+        if (time.matches("[^0-9:]+")) {
+            throw new ValidationException("invalid time format");
+        }
         String[] units = time.split(":");
+        if (units.length != 2) {
+            throw new ValidationException("invalid time format");
+        }
         int hour = Integer.parseInt(units[0]);
         int minute = Integer.parseInt(units[1]);
-        if (hour > HOURS_IN_A_DAY || minute > MINUTES_IN_HOUR) throw new ValidationException("time unit exceeds bounds");
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(noTimeDate);
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        return calendar.getTime();
+        if (hour > HOURS_IN_A_DAY || minute > MINUTES_IN_HOUR) {
+            throw new ValidationException("time unit exceeds bounds");
+        }
+        try {
+            Calendar calendar = GregorianCalendar.getInstance();
+            calendar.setTime(noTimeDate);
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
+            calendar.set(Calendar.MINUTE, minute);
+            return calendar.getTime();
+        }
+        catch (NullPointerException ignored){
+            return null;
+        }
     }
-        public String getTimeOfTheDayFromDate(Date date){//to set in detached time field
+    public String getTimeOfTheDayFromDate(Date date){//to set in detached time field
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(date);
         int hours = calendar.get(Calendar.HOUR_OF_DAY);
@@ -47,6 +65,4 @@ public class DateService {
 
         return service.formTimeUnit(hours) + ":" + service.formTimeUnit(minutes);
     }
-
-
 }

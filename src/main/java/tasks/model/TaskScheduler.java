@@ -1,21 +1,111 @@
 package tasks.model;
 
-import javafx.collections.ObservableList;
+import tasks.exceptions.ValidationException;
 
-import java.util.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class TaskScheduler {
+    public List<Task> tasks;
 
-    public ArrayList<Task> tasks;
-
-    public TaskScheduler(ObservableList<Task> tasksList){
-        tasks=new ArrayList<>();
-        tasks.addAll(tasksList);
+    public TaskScheduler(List<Task> tasksList){
+        tasks = tasksList;
     }
 
-    public Iterable<Task> incoming(Date start, Date end){
-        System.out.println(start);
-        System.out.println(end);
+    private static final int MINUTES_IN_HOUR = 60;
+    private static final int HOURS_IN_A_DAY = 24;
+
+    public Iterable<Task> incoming(LocalDate startDateValue, String startTimeValue, Date end){ // TODO: de adaugat validation if-s
+        Instant instant = Instant.from(startDateValue.atStartOfDay(ZoneId.systemDefault()));
+        Date date = Date.from(instant);
+
+        if (startTimeValue.matches("[^0-9:]+")) {
+            throw new ValidationException("invalid time format");
+        }
+        String[] units = startTimeValue.split(":");
+        if (units.length != 2) {
+            throw new ValidationException("invalid time format");
+        }
+        int hour = Integer.parseInt(units[0]);
+        int minute = Integer.parseInt(units[1]);
+        if (hour > HOURS_IN_A_DAY || minute > MINUTES_IN_HOUR) {
+            throw new ValidationException("time unit exceeds bounds");
+        }
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        Date start = calendar.getTime();
+
+        ArrayList<Task> incomingTasks = new ArrayList<>();
+        for (Task t : tasks) {
+            Date nextTime = t.nextTimeAfter(start);
+            boolean v1 = nextTime != null;
+            if (v1) {
+                boolean v2 = nextTime.before(end);
+                boolean v3 = nextTime.equals(end);
+                if (v2 || v3) {
+                    incomingTasks.add(t);
+                    System.out.println(t.getTitle());
+                }
+            }
+        }
+        return incomingTasks;
+    }
+}
+
+/*
+package tasks.model;
+
+import tasks.exceptions.ValidationException;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+public class TaskScheduler {
+    public List<Task> tasks;
+
+    public TaskScheduler(List<Task> tasksList){
+        tasks = tasksList;
+    }
+
+    private static final int MINUTES_IN_HOUR = 60;
+    private static final int HOURS_IN_A_DAY = 24;
+
+    public Iterable<Task> incoming(LocalDate startDateValue, String startTimeValue, Date end){ // TODO: de adaugat validation if-s
+        Instant instant = Instant.from(startDateValue.atStartOfDay(ZoneId.systemDefault()));
+        Date date = Date.from(instant);
+
+        if (startTimeValue.matches("[^0-9:]+")) {
+            throw new ValidationException("invalid time format");
+        }
+        String[] units = startTimeValue.split(":");
+        if (units.length != 2) {
+            throw new ValidationException("invalid time format");
+        }
+        int hour = Integer.parseInt(units[0]);
+        int minute = Integer.parseInt(units[1]);
+        if (hour > HOURS_IN_A_DAY || minute > MINUTES_IN_HOUR) {
+            throw new ValidationException("time unit exceeds bounds");
+        }
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        Date start = calendar.getTime();
+
         ArrayList<Task> incomingTasks = new ArrayList<>();
         for (Task t : tasks) {
             Date nextTime = t.nextTimeAfter(start);
@@ -26,24 +116,5 @@ public class TaskScheduler {
         }
         return incomingTasks;
     }
-    public SortedMap<Date, Set<Task>> calendar( Date start, Date end){
-        Iterable<Task> incomingTasks = incoming(start, end);
-        TreeMap<Date, Set<Task>> calendar = new TreeMap<>();
-
-        for (Task t : incomingTasks){
-            Date nextTimeAfter = t.nextTimeAfter(start);
-            while (nextTimeAfter!= null && (nextTimeAfter.before(end) || nextTimeAfter.equals(end))){
-                if (calendar.containsKey(nextTimeAfter)){
-                    calendar.get(nextTimeAfter).add(t);
-                }
-                else {
-                    HashSet<Task> oneDateTasks = new HashSet<>();
-                    oneDateTasks.add(t);
-                    calendar.put(nextTimeAfter,oneDateTasks);
-                }
-                nextTimeAfter = t.nextTimeAfter(nextTimeAfter);
-            }
-        }
-        return calendar;
-    }
 }
+ */
