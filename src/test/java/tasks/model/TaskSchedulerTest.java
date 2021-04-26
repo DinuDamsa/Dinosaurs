@@ -58,37 +58,37 @@ class TaskSchedulerTest {
     }
 
     @Test
-    void incomingThrowsTimeContainsAlpha() {
+    void incomingThrowsTimeContainsAlpha() { // F02_1
         String startTimeValue = "manual";
         assertThrows(ValidationException.class, () -> taskScheduler.incoming(localDate, startTimeValue, new Date()), "Should have thrown exception because of bad time!");
     }
 
     @Test
-    void incomingThrowsTimeSplitFormat() {
+    void incomingThrowsTimeSplitFormat() { // F02_2
         String startTimeValue = "0000";
         assertThrows(ValidationException.class, () -> taskScheduler.incoming(localDate, startTimeValue, new Date()), "Should have thrown exception because of bad time!");
     }
 
     @Test
-    void incomingThrowsTimeIntervalBadHours() {
+    void incomingThrowsTimeIntervalBadHours() { // F02_3 FT
         String startTimeValue = "99:10";
         assertThrows(ValidationException.class, () -> taskScheduler.incoming(localDate, startTimeValue, new Date()), "Should have thrown exception because of bad time!");
     }
 
     @Test
-    void incomingThrowsTimeIntervalBadMinutes() {
+    void incomingThrowsTimeIntervalBadMinutes() { // F02_3 TF
         String startTimeValue = "10:99";
         assertThrows(ValidationException.class, () -> taskScheduler.incoming(localDate, startTimeValue, new Date()), "Should have thrown exception because of bad time!");
     }
 
     @Test
-    void incomingThrowsTimeIntervalBadAll() {
+    void incomingThrowsTimeIntervalBadAll() { // F02_3 FF
         String startTimeValue = "99:99";
         assertThrows(ValidationException.class, () -> taskScheduler.incoming(localDate, startTimeValue, new Date()), "Should have thrown exception because of bad time!");
     }
 
-    @Test
-    void incomingEmptyResultEmptyList() {
+    @Test // testul 6
+    void incomingEmptyResultEmptyList() { // n = 0
         Iterable<Task> filtered = taskScheduler.incoming(localDate, endTimeValue, endInterval);
         List<Task> list = StreamSupport.stream(filtered.spliterator(), false)
                 .collect(Collectors.toList());
@@ -96,7 +96,7 @@ class TaskSchedulerTest {
     }
 
     @Test
-    void incomingEmptyResultNoActiveRepetitiveTasks() {
+    void incomingEmptyResultNoActiveRepetitiveOneTask() { // n = 1
 
         Task task = new Task("no_active_rep", start, end, 10);
         task.setActive(false);
@@ -109,17 +109,33 @@ class TaskSchedulerTest {
     }
 
     @Test
-    void incomingEmptyResultActiveNonRepetitiveTasks() { // nextTime == null
+    void incomingEmptyResultNoActiveRepetitiveTwoTasks() { // n = 2
 
-        Task task = new Task("active_non_rep", start);
+        Task task = new Task("no_active_rep", start, end, 10);
+        Task task2 = new Task("no_active_rep", start, end, 10);
         task.setActive(false);
+        task2.setActive(false);
         taskScheduler.tasks.add(task);
+        taskScheduler.tasks.add(task2);
 
         Iterable<Task> filtered = taskScheduler.incoming(localDate, endTimeValue, endInterval);
         List<Task> list = StreamSupport.stream(filtered.spliterator(), false)
                 .collect(Collectors.toList());
         assertEquals(0, list.size());
     }
+
+//    @Test
+//    void incomingEmptyResultActiveNonRepetitiveTasks() { // nextTime == null
+//
+//        Task task = new Task("active_non_rep", start);
+//        task.setActive(false);
+//        taskScheduler.tasks.add(task);
+//
+//        Iterable<Task> filtered = taskScheduler.incoming(localDate, endTimeValue, endInterval);
+//        List<Task> list = StreamSupport.stream(filtered.spliterator(), false)
+//                .collect(Collectors.toList());
+//        assertEquals(0, list.size());
+//    }
 
 
     @Test
@@ -147,7 +163,7 @@ class TaskSchedulerTest {
         assertEquals(1, list.size());
     }
 
-    @Test
+    @Test // test 11
     void incomingEmptyResultV1V2NotV3() { // nextTime.before(end) || !nextTime.equals(end)
 
         Task task = new Task("active_rep", datedate, end, 10);
@@ -172,6 +188,24 @@ class TaskSchedulerTest {
         List<Task> list = StreamSupport.stream(filtered.spliterator(), false)
                 .collect(Collectors.toList());
         assertEquals(0, list.size());
+    }
+
+    @Test
+    void incomingAPC() { // enter loop; first task ok; second not ok; exit.
+
+        Task task = new Task("active_rep", datedate, end, 10);
+        task.setActive(true);
+        taskScheduler.tasks.add(task);
+
+        Task task2 = new Task("non_active_rep", datedate, datedate, 10);
+        task2.setActive(false);
+        taskScheduler.tasks.add(task2);
+
+//        MyTest.f(taskScheduler.tasks, start, end);
+        Iterable<Task> filtered = taskScheduler.incoming(localDate, "00:00", end);
+        List<Task> list = StreamSupport.stream(filtered.spliterator(), false)
+                .collect(Collectors.toList());
+        assertEquals(1, list.size());
     }
 
 //    @MyTest
