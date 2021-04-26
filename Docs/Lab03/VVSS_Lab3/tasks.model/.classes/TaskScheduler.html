@@ -1,0 +1,203 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TaskScheduler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">tasks.model</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TaskScheduler (tasks.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TaskScheduler</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (31/ 31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package tasks.model;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import tasks.exceptions.ValidationException;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.time.Instant;
+<i>6</i>&nbsp;import java.time.LocalDate;
+<i>7</i>&nbsp;import java.time.ZoneId;
+<i>8</i>&nbsp;import java.util.ArrayList;
+<i>9</i>&nbsp;import java.util.Calendar;
+<i>10</i>&nbsp;import java.util.Date;
+<i>11</i>&nbsp;import java.util.GregorianCalendar;
+<i>12</i>&nbsp;import java.util.List;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;public class TaskScheduler {
+<i>15</i>&nbsp;    public List&lt;Task&gt; tasks;
+<i>16</i>&nbsp;
+<b class="fc"><i>17</i>&nbsp;    public TaskScheduler(List&lt;Task&gt; tasksList){</b>
+<b class="fc"><i>18</i>&nbsp;        tasks = tasksList;</b>
+<b class="fc"><i>19</i>&nbsp;    }</b>
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    private static final int MINUTES_IN_HOUR = 60;
+<i>22</i>&nbsp;    private static final int HOURS_IN_A_DAY = 24;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    public Iterable&lt;Task&gt; incoming(LocalDate startDateValue, String startTimeValue, Date end){ // TODO: de adaugat validation if-s
+<b class="fc"><i>25</i>&nbsp;        Instant instant = Instant.from(startDateValue.atStartOfDay(ZoneId.systemDefault()));</b>
+<b class="fc"><i>26</i>&nbsp;        Date date = Date.from(instant);</b>
+<i>27</i>&nbsp;
+<b class="fc"><i>28</i>&nbsp;        if (startTimeValue.matches(&quot;[^0-9:]+&quot;)) {</b>
+<b class="fc"><i>29</i>&nbsp;            throw new ValidationException(&quot;invalid time format&quot;);</b>
+<i>30</i>&nbsp;        }
+<b class="fc"><i>31</i>&nbsp;        String[] units = startTimeValue.split(&quot;:&quot;);</b>
+<b class="fc"><i>32</i>&nbsp;        if (units.length != 2) {</b>
+<b class="fc"><i>33</i>&nbsp;            throw new ValidationException(&quot;invalid time format&quot;);</b>
+<i>34</i>&nbsp;        }
+<b class="fc"><i>35</i>&nbsp;        int hour = Integer.parseInt(units[0]);</b>
+<b class="fc"><i>36</i>&nbsp;        int minute = Integer.parseInt(units[1]);</b>
+<b class="fc"><i>37</i>&nbsp;        if (hour &gt; HOURS_IN_A_DAY || minute &gt; MINUTES_IN_HOUR) {</b>
+<b class="fc"><i>38</i>&nbsp;            throw new ValidationException(&quot;time unit exceeds bounds&quot;);</b>
+<i>39</i>&nbsp;        }
+<b class="fc"><i>40</i>&nbsp;        Calendar calendar = GregorianCalendar.getInstance();</b>
+<b class="fc"><i>41</i>&nbsp;        calendar.setTime(date);</b>
+<b class="fc"><i>42</i>&nbsp;        calendar.set(Calendar.HOUR_OF_DAY, hour);</b>
+<b class="fc"><i>43</i>&nbsp;        calendar.set(Calendar.MINUTE, minute);</b>
+<b class="fc"><i>44</i>&nbsp;        Date start = calendar.getTime();</b>
+<i>45</i>&nbsp;
+<b class="fc"><i>46</i>&nbsp;        ArrayList&lt;Task&gt; incomingTasks = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>47</i>&nbsp;        for (Task t : tasks) {</b>
+<b class="fc"><i>48</i>&nbsp;            Date nextTime = t.nextTimeAfter(start);</b>
+<b class="fc"><i>49</i>&nbsp;            boolean v1 = nextTime != null;</b>
+<b class="fc"><i>50</i>&nbsp;            if (v1) {</b>
+<b class="fc"><i>51</i>&nbsp;                boolean v2 = nextTime.before(end);</b>
+<b class="fc"><i>52</i>&nbsp;                boolean v3 = nextTime.equals(end);</b>
+<b class="fc"><i>53</i>&nbsp;                if (v2 || v3) {</b>
+<b class="fc"><i>54</i>&nbsp;                    incomingTasks.add(t);</b>
+<b class="fc"><i>55</i>&nbsp;                    System.out.println(t.getTitle());</b>
+<i>56</i>&nbsp;                }
+<i>57</i>&nbsp;            }
+<b class="fc"><i>58</i>&nbsp;        }</b>
+<b class="fc"><i>59</i>&nbsp;        return incomingTasks;</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;}
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;/*
+<i>64</i>&nbsp;package tasks.model;
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;import tasks.exceptions.ValidationException;
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;import java.time.Instant;
+<i>69</i>&nbsp;import java.time.LocalDate;
+<i>70</i>&nbsp;import java.time.ZoneId;
+<i>71</i>&nbsp;import java.util.ArrayList;
+<i>72</i>&nbsp;import java.util.Calendar;
+<i>73</i>&nbsp;import java.util.Date;
+<i>74</i>&nbsp;import java.util.GregorianCalendar;
+<i>75</i>&nbsp;import java.util.List;
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;public class TaskScheduler {
+<i>78</i>&nbsp;    public List&lt;Task&gt; tasks;
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public TaskScheduler(List&lt;Task&gt; tasksList){
+<i>81</i>&nbsp;        tasks = tasksList;
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    private static final int MINUTES_IN_HOUR = 60;
+<i>85</i>&nbsp;    private static final int HOURS_IN_A_DAY = 24;
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    public Iterable&lt;Task&gt; incoming(LocalDate startDateValue, String startTimeValue, Date end){ // TODO: de adaugat validation if-s
+<i>88</i>&nbsp;        Instant instant = Instant.from(startDateValue.atStartOfDay(ZoneId.systemDefault()));
+<i>89</i>&nbsp;        Date date = Date.from(instant);
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;        if (startTimeValue.matches(&quot;[^0-9:]+&quot;)) {
+<i>92</i>&nbsp;            throw new ValidationException(&quot;invalid time format&quot;);
+<i>93</i>&nbsp;        }
+<i>94</i>&nbsp;        String[] units = startTimeValue.split(&quot;:&quot;);
+<i>95</i>&nbsp;        if (units.length != 2) {
+<i>96</i>&nbsp;            throw new ValidationException(&quot;invalid time format&quot;);
+<i>97</i>&nbsp;        }
+<i>98</i>&nbsp;        int hour = Integer.parseInt(units[0]);
+<i>99</i>&nbsp;        int minute = Integer.parseInt(units[1]);
+<i>100</i>&nbsp;        if (hour &gt; HOURS_IN_A_DAY || minute &gt; MINUTES_IN_HOUR) {
+<i>101</i>&nbsp;            throw new ValidationException(&quot;time unit exceeds bounds&quot;);
+<i>102</i>&nbsp;        }
+<i>103</i>&nbsp;        Calendar calendar = GregorianCalendar.getInstance();
+<i>104</i>&nbsp;        calendar.setTime(date);
+<i>105</i>&nbsp;        calendar.set(Calendar.HOUR_OF_DAY, hour);
+<i>106</i>&nbsp;        calendar.set(Calendar.MINUTE, minute);
+<i>107</i>&nbsp;        Date start = calendar.getTime();
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;        ArrayList&lt;Task&gt; incomingTasks = new ArrayList&lt;&gt;();
+<i>110</i>&nbsp;        for (Task t : tasks) {
+<i>111</i>&nbsp;            Date nextTime = t.nextTimeAfter(start);
+<i>112</i>&nbsp;            if (nextTime != null &amp;&amp; (nextTime.before(end) || nextTime.equals(end))) {
+<i>113</i>&nbsp;                incomingTasks.add(t);
+<i>114</i>&nbsp;                System.out.println(t.getTitle());
+<i>115</i>&nbsp;            }
+<i>116</i>&nbsp;        }
+<i>117</i>&nbsp;        return incomingTasks;
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;}
+<i>120</i>&nbsp; */
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-04-11 17:19</div>
+</div>
+</body>
+</html>
