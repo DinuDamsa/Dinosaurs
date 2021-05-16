@@ -1,0 +1,6 @@
+com\dinosaurs\features\search\TestLoginBad.class
+com\dinosaurs\pages\DictionaryPage.class
+com\dinosaurs\features\search\SearchByKeywordStory.class
+com\dinosaurs\features\search\TestLoginGood.class
+com\dinosaurs\features\search\package-info.class
+com\dinosaurs\steps\serenity\EndUserSteps.class

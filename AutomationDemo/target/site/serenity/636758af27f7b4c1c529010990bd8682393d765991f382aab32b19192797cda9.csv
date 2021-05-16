@@ -1,0 +1,4 @@
+"Story","Title","Result","Date","Stability","Duration (s)"
+"Search by keyword story","Senario login send email logout","SUCCESS","2021-05-16T15:44:29.5246803+03:00[Europe/Athens]","0.0","20.44"
+"Test login bad","Login bad data","SUCCESS","2021-05-16T15:45:04.0938307+03:00[Europe/Athens]","0.0","10.42"
+"Test login good","Login good data","SUCCESS","2021-05-16T15:45:11.9479578+03:00[Europe/Athens]","0.0","6.75"
