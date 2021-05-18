@@ -1,1 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?><testsuite errors="0" failures="0" name="com.dinosaurs.features.search.TestLoginBad" skipped="1" tests="1" time="10.42" timestamp="2021-05-16 03:45:04"><testcase classname="com.dinosaurs.features.search.TestLoginBad" name="Login bad data"/></testsuite>
+<?xml version="1.0" encoding="UTF-8"?><testsuite errors="0" failures="0" name="com.dinosaurs.features.search.TestLoginBad" skipped="1" tests="1" time="10.45" timestamp="2021-05-18 12:54:45"><testcase classname="com.dinosaurs.features.search.TestLoginBad" name="Login bad data"/></testsuite>

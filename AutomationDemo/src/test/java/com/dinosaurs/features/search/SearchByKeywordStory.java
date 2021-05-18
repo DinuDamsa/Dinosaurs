@@ -1,8 +1,10 @@
 package com.dinosaurs.features.search;
 
+import com.dinosaurs.steps.serenity.EndUserSteps;
 import net.serenitybdd.junit.runners.SerenityRunner;
 import net.thucydides.core.annotations.Issue;
 import net.thucydides.core.annotations.Managed;
+import net.thucydides.core.annotations.Steps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
@@ -18,21 +20,27 @@ public class SearchByKeywordStory {
     @Managed(uniqueSession = true)
     public WebDriver webdriver;
 
+    @Steps
+    public EndUserSteps anna;
+
     @Issue("#WIKI-1")
     @Test
     public void senario_login_sendEmail_logout() throws InterruptedException { // verifica mail
 
         //login
-        webdriver.get("https://www.scs.ubbcluj.ro/webmail/");
-        webdriver.findElement(By.id("rcmloginuser")).sendKeys("cgir2476");
-        webdriver.findElement(By.id("rcmloginpwd")).sendKeys("ebb54#24d5");
-        webdriver.findElement(By.id("rcmloginsubmit")).click();
+//        webdriver.get("https://www.scs.ubbcluj.ro/webmail/");
+//        webdriver.findElement(By.id("rcmloginuser")).sendKeys("cgir2476");
+//        webdriver.findElement(By.id("rcmloginpwd")).sendKeys("ebb54#24d5");
+//        webdriver.findElement(By.id("rcmloginsubmit")).click();
+        anna.is_the_home_page();
+        anna.login_action("cgir2476","ebb54#24d5");
 
 
         System.out.println("LOGGED IN");
 
         //verify login
-        assert (webdriver.findElement(By.id("rcmbtn103")).isDisplayed());
+//        assert (webdriver.findElement(By.id("rcmbtn103")).isDisplayed());
+        anna.assertLoginSuccess();
 
         System.out.println("VERIFIED LOGIN");
 
@@ -44,39 +52,49 @@ public class SearchByKeywordStory {
         Thread.sleep(2000);
 
 //        webdriver.findElement(By.id("rcmbtn117")).click();
-
-//        Thread.sleep(2000);
-//        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id("_to")));
-//        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id("compose-subject")));
-//        webdriver.findElement(By.id("_to")).sendKeys("diir2495@scs.ubbcluj.ro");
-//        webdriver.findElement(By.id("compose-subject")).sendKeys("Lab6_VVSS");
-//        webdriver.findElement(By.id("compose-body")).sendKeys("Bacon ipsum dolor amet pork belly shankle buffalo capicola, shank venison turkey alcatra spare ribs sirloin turducken beef chislic. Jowl spare ribs porchetta chislic chicken kielbasa bresaola filet mignon ground round fatback. Boudin shoulder pork chop chicken tri-tip kevin cow, hamburger ham frankfurter pork belly. Porchetta tri-tip venison meatloaf ham tail pancetta filet mignon kielbasa jowl chislic turkey. Shankle leberkas porchetta ground round jerky beef ribs landjaeger capicola meatloaf chicken sirloin pork loin frankfurter pork chop bacon.");
-//        webdriver.findElement(By.id("rcmbtn105")).click();
+//
+////        Thread.sleep(2000);
+////        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id("_to")));
+////        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id("compose-subject")));
+////        webdriver.findElement(By.id("_to")).sendKeys("diir2495@scs.ubbcluj.ro");
+////        webdriver.findElement(By.id("compose-subject")).sendKeys("Lab6_VVSS");
+////        webdriver.findElement(By.id("compose-body")).sendKeys("Bacon ipsum dolor amet pork belly shankle buffalo capicola, shank venison turkey alcatra spare ribs sirloin turducken beef chislic. Jowl spare ribs porchetta chislic chicken kielbasa bresaola filet mignon ground round fatback. Boudin shoulder pork chop chicken tri-tip kevin cow, hamburger ham frankfurter pork belly. Porchetta tri-tip venison meatloaf ham tail pancetta filet mignon kielbasa jowl chislic turkey. Shankle leberkas porchetta ground round jerky beef ribs landjaeger capicola meatloaf chicken sirloin pork loin frankfurter pork chop bacon.");
+////        webdriver.findElement(By.id("rcmbtn105")).click();
 
         System.out.println("SENT EMAIL");
 //        Thread.sleep(10000);
         //verify sent
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("rcmliU2VudA")));
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("rcmliU2VudA")));
+//        Thread.sleep(2000);
+//        webdriver.findElement(By.id("rcmliU2VudA")).click();
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("rcmrow66"))); // TODO: rcmrow67
+//        Thread.sleep(2000);
+//        webdriver.findElement(By.id("rcmrow66")).click();
+//        webdriver.findElement(By.id("rcmrow66")).click();
+//        Thread.sleep(2000);
+        anna.access_email();
         Thread.sleep(2000);
-        webdriver.findElement(By.id("rcmliU2VudA")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("rcmrow66"))); // TODO: rcmrow67
+        anna.click_email();
         Thread.sleep(2000);
-        webdriver.findElement(By.id("rcmrow66")).click();
-        webdriver.findElement(By.id("rcmrow66")).click();
-        Thread.sleep(2000);
-        assert (webdriver.findElement(By.id("messagebody")).getText().equals("Bacon ipsum dolor amet pork belly shankle buffalo capicola, shank venison turkey alcatra spare ribs sirloin turducken beef chislic. Jowl spare ribs porchetta chislic chicken kielbasa bresaola filet mignon ground round fatback. Boudin shoulder pork chop chicken tri-tip kevin cow, hamburger ham frankfurter pork belly. Porchetta tri-tip venison meatloaf ham tail pancetta filet mignon kielbasa jowl chislic turkey. Shankle leberkas porchetta ground round jerky beef ribs landjaeger capicola meatloaf chicken sirloin pork loin frankfurter pork chop bacon."));
+
+
+//        assert (webdriver.findElement(By.id("messagebody")).getText().equals("Bacon ipsum dolor amet pork belly shankle buffalo capicola, shank venison turkey alcatra spare ribs sirloin turducken beef chislic. Jowl spare ribs porchetta chislic chicken kielbasa bresaola filet mignon ground round fatback. Boudin shoulder pork chop chicken tri-tip kevin cow, hamburger ham frankfurter pork belly. Porchetta tri-tip venison meatloaf ham tail pancetta filet mignon kielbasa jowl chislic turkey. Shankle leberkas porchetta ground round jerky beef ribs landjaeger capicola meatloaf chicken sirloin pork loin frankfurter pork chop bacon."));
+//        Thread.sleep(2000);
+        anna.assertMessageBodyCorrect();
         Thread.sleep(2000);
 
         System.out.println("VERIFY SENT EMAIL");
 
         //logout
-        webdriver.findElement(By.id("rcmbtn103")).click();
+//        webdriver.findElement(By.id("rcmbtn103")).click();
+        anna.click_logout();
 
         System.out.println("LOGOUT");
 
         Thread.sleep(2000);
         //verify logout
-        assert (webdriver.findElement(By.id("login-form")).isDisplayed());
+//        assert (webdriver.findElement(By.id("login-form")).isDisplayed());
+        anna.assertLogout();
 
         System.out.println("VERIFY LOGOUT");
     }
